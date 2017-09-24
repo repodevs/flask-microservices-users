@@ -4,6 +4,11 @@ from project.tests.base import BaseTestCase
 from project import db
 from project.api.models import User
 
+def add_user(username, email):
+    user = User(username=username, email=email)
+    db.session.add(user)
+    db.session.commit()
+    return user
 
 class TestUserService(BaseTestCase):
     """Test for the User Service """
@@ -86,9 +91,7 @@ class TestUserService(BaseTestCase):
 
     def test_singe_user(self):
         """Ensure get single user behaves correctly."""
-        user = User(username='repodevs', email='repodevs@gmail.com')
-        db.session.add(user)
-        db.session.commit()
+        user = add_user(username='repodevs', email='repodevs@gmail.com')
         with self.client:
             response = self.client.get(f'/users/{user.id}')
             data = json.loads(response.data.decode())
@@ -117,3 +120,21 @@ class TestUserService(BaseTestCase):
             self.assertEqual(response.status_code, 404)
             self.assertIn('User does not exist', data['message'])
             self.assertIn('fail', data['status'])
+
+
+    def test_all_users(self):
+        """Ensure get all users behaves correctly."""
+        add_user('edi', 'edi@repodevs.com')
+        add_user('santoso', 'santoso@repodevs.com')
+        with self.client:
+            response = self.client.get('/users')
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(len(data['data']['users']), 2)
+            self.assertTrue('created_at' in  data['data']['users'][0])
+            self.assertTrue('created_at' in  data['data']['users'][1])
+            self.assertIn('edi', data['data']['users'][0]['username'])
+            self.assertIn('edi@repodevs.com', data['data']['users'][0]['email'])
+            self.assertIn('santoso', data['data']['users'][1]['username'])
+            self.assertIn('santoso@repodevs.com', data['data']['users'][1]['email'])
+            self.assertIn('success', data['status'])
