@@ -27,4 +27,41 @@ $ docker-machine scp -r ./app devbox:/root
 ```bash
 $ docker-compose logs -f users-service
 ```
+----
+
+## Other Commands
+
+Create the database:
+```bash
+$ docker-compose run users-services python manage.py recreate_db
+```
+Seed the database:
+```bash
+$ docker-compose run users-services python manage.py seed
+```
+Run the tests:
+```bash
+$ docker-compose run users-services python manage.py test
+```
+To stop Docker container:
+```bash
+$ docker-compose stop
+```
+To bring down the container:
+```bash
+$ docker-compose down
+```
+Force build:
+```bash
+$ docker-compose build --no-cache
+```
+Remove image:
+```bash
+$ docker rmi $(docker images -q)
+```
+---
+Access database via psql:
+```bash
+$ docker exec -ti users-db psql -U postgres -W
+```
 
