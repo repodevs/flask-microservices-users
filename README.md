@@ -1,5 +1,13 @@
 # FLASK MICROSERVICES
 
+This project is based on [testdriven.io](http://testdriven.io/) Microservices with Docker, Flask and React
+
+### Structure
+1. _[flask-microservices-main](https://github.com/repodevs/flask-microservices-main)_ Docker Compose files, Nginx, admin scripts
+2. _[flask-microservices-users](https://github.com/repodevs/flask-microservices-users)_ Flask App
+3. _[flask-microservices-client](https://github.com/repodevs/flask-microservices-client)_ client-side based on ReactJS
+---
+
 ## How To Run
 ----
 1. create docker-machine (with driver digitalocean based on ubuntu 14.04)   
