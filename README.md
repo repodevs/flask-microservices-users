@@ -72,4 +72,18 @@ Access database via psql:
 ```bash
 $ docker exec -ti users-db psql -U postgres -W
 ```
-
+---
+Create virtual environment
+```bash
+$ python3.6 -m venv env
+```
+Activate virtual environment
+```bash
+$ source env/bin/activate
+```
+Export local environment
+```bash
+(env)$ export APP_SETTINGS=project.config.DevelopmentConfig
+(env)$ export DATABASE_URL=postgres://postgres:postgres@localhost:5432/flask_users_dev
+(env)$ export DATABASE_TEST_URL=postgres://postgres:postgres@localhost:5432/flask_users_test
+```
