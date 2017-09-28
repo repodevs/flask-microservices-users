@@ -1,5 +1,7 @@
 # FLASK MICROSERVICES
 
+[![Build Status](https://travis-ci.org/repodevs/flask-microservices-users.svg?branch=master)](https://travis-ci.org/repodevs/flask-microservices-users)
+
 This project is based on [testdriven.io](http://testdriven.io/) Microservices with Docker, Flask and React
 
 ### Structure
