@@ -3,13 +3,13 @@ from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_migrate import Migrate
+from flask_bcrypt import Bcrypt
 
 
-# db instance
+# instance the extensions
 db = SQLAlchemy()
-
-# flask migrate instance
 migrate = Migrate()
+bcrypt = Bcrypt()
 
 
 def create_app():
@@ -24,6 +24,7 @@ def create_app():
 
     # setup extensions
     db.init_app(app)
+    bcrypt.init_app(app)
     migrate.init_app(app, db)
 
     # registers blueprints
