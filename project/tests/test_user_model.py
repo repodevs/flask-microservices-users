@@ -3,18 +3,14 @@ from project import db
 from project.api.models import User
 from project.tests.base import BaseTestCase
 from sqlalchemy.exc import IntegrityError
+from project.tests.utils import add_user
 
 
 class TestUserModel(BaseTestCase):
     
     def test_add_user(self):
         """Ensure a new user can be added to the database"""
-        user = User(
-            username='testuser',
-            email='user@test.com',
-        )
-        db.session.add(user)
-        db.session.commit()
+        user = add_user('testuser', 'user@test.com')
         self.assertTrue(user.id)
         self.assertEqual(user.username, 'testuser')
         self.assertEqual(user.email, 'user@test.com')
@@ -23,12 +19,7 @@ class TestUserModel(BaseTestCase):
 
     def test_add_user_duplicate_username(self):
         """Ensure error is thrown if the username already exists"""
-        user = User(
-            username='testuser',
-            email='user@test.com',
-        )
-        db.session.add(user)
-        db.session.commit()
+        add_user('testuser', 'user@test.com')
         duplicate_user = User(
             username='testuser',
             email='user2@test.com'
@@ -38,12 +29,7 @@ class TestUserModel(BaseTestCase):
 
     def test_add_user_duplicate_email(self):
         """Ensure error is thrown if the email already exists"""
-        user = User(
-            username='testuser',
-            email='user@test.com',
-        )
-        db.session.add(user)
-        db.session.commit()
+        add_user('testuser', 'user@test.com')
         duplicate_user = User(
             username='testuser2',
             email='user@test.com'
