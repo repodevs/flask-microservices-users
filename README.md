@@ -52,6 +52,15 @@ $ docker-compose run users-services python manage.py seed
 Run the tests:
 ```bash
 $ docker-compose run users-services python manage.py test
+Init flask migration folder:
+```bash
+$ docker-compose run users-services python manage.py db init
+Migrate database:
+```bash
+$ docker-compose run users-services python manage.py db migrate
+Apply migration to database:
+```bash
+$ docker-compose run users-services python manage.py db upgrade
 ```
 To stop Docker container:
 ```bash
