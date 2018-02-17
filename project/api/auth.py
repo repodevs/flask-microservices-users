@@ -95,3 +95,28 @@ def login_user():
 			'message': 'Try again.'
 		}
 		return jsonify(response_object), 500
+
+@auth_blueprint.route('/auth/logout', methods=['GET'])
+def logout_user():
+	auth_header = request.headers.get('Authorization')
+	if auth_header:
+		auth_token = auth_header.split(" ")[1]
+		resp = User.decode_auth_token(auth_token)
+		if not isinstance(resp, str):
+			response_object = {
+				'status': 'success',
+				'message': 'Successfully logged out.'
+			}
+			return jsonify(response_object), 200
+		else:
+			response_object = {
+				'status': 'error',
+				'message': resp
+			}
+			return jsonify(response_object), 401
+	else:
+		response_object = {
+			'status': 'error',
+			'message': 'Provide a valid auth token'
+		}
+		return jsonify(response_object), 403

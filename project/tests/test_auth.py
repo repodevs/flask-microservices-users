@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import time
 
 from project import db
 from project.api.models import User
@@ -114,3 +115,70 @@ class TestAuthBlueprint(BaseTestCase):
 			self.assertTrue(data['message'] == 'User does not exist.')
 			self.assertTrue(response.content_type == 'application/json')
 			self.assertEqual(response.status_code, 404)
+
+	def test_valid_logout(self):
+		add_user('user', 'user@test.com', '1234')
+		with self.client:
+			# user login
+			resp_login = self.client.post(
+				'/auth/login',
+				data=json.dumps(dict(
+					email='user@test.com',
+					password='1234'
+				)),
+				content_type='application/json'
+			)
+			# valid token logout
+			response = self.client.get(
+				'/auth/logout',
+				headers=dict(
+					Authorization='Bearer '+ json.loads(resp_login.data.decode()
+					)['auth_token']
+				)
+			)
+			data = json.loads(response.data.decode())
+			self.assertTrue(data['status'] == 'success')
+			self.assertTrue(data['message'] == 'Successfully logged out.')
+			self.assertEqual(response.status_code, 200)
+
+	def test_invalid_logout_expired_token(self):
+		add_user('user', 'user@test.com', '1234')
+		with self.client:
+			# user login
+			resp_login = self.client.post(
+				'/auth/login',
+				data=json.dumps(dict(
+					email='user@test.com',
+					password='1234'
+				)),
+				content_type='application/json'
+			)
+			# invalid token logout
+			time.sleep(4)
+			response = self.client.get(
+				'/auth/logout',
+				headers=dict(
+					Authorization='Bearer '+ json.loads(resp_login.data.decode()
+					)['auth_token']
+				)
+			)
+			data = json.loads(response.data.decode())
+			self.assertTrue(data['status'] == 'error')
+			self.assertTrue(
+				data['message'] ==
+				'Signature expired. Please log in again.'
+			)
+			self.assertEqual(response.status_code, 401)
+
+	def test_invalid_logout(self):
+		with self.client:
+			response = self.client.get(
+				'/auth/logout',
+				headers=dict(Authorization='Bearer invalid')
+			)
+			data = json.loads(response.data.decode())
+			self.assertTrue(data['status'] == 'error')
+			self.assertTrue(
+				data['message'] ==
+				'Invalid token. Please log in again.')
+			self.assertEqual(response.status_code, 401)
