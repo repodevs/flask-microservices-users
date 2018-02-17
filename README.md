@@ -97,4 +97,5 @@ Export local environment
 (env)$ export APP_SETTINGS=project.config.DevelopmentConfig
 (env)$ export DATABASE_URL=postgres://postgres:postgres@localhost:5432/flask_users_dev
 (env)$ export DATABASE_TEST_URL=postgres://postgres:postgres@localhost:5432/flask_users_test
+(env)$ export SECRET_KEY="S3Cr3Tk3Y"
 ```
