@@ -80,3 +80,37 @@ class TestAuthBlueprint(BaseTestCase):
 			self.assertEqual(response.status_code, 400)
 			self.assertIn('Invalid payload.', data['message'])
 			self.assertIn('error', data['status'])
+
+	def test_registered_user_login(self):
+		with self.client:
+			user = add_user('user', 'user@test.com', '1234')
+			response = self.client.post(
+				'/auth/login',
+				data=json.dumps(dict(
+						email='user@test.com',
+						password='1234'
+					)),
+					content_type='application/json'
+			)
+			data = json.loads(response.data.decode())
+			self.assertTrue(data['status'] == 'success')
+			self.assertTrue(data['message'] == 'Successfully loged in.')
+			self.assertTrue(data['auth_token'])
+			self.assertTrue(response.content_type == 'application/json')
+			self.assertEqual(response.status_code, 200)
+
+	def test_not_registered_user_login(self):
+		with self.client:
+			response = self.client.post(
+				'/auth/login',
+				data=json.dumps(dict(
+						email='user@test.com',
+						password='1234'
+					)),
+					content_type='application/json'
+			)
+			data = json.loads(response.data.decode())
+			self.assertTrue(data['status'] == 'error')
+			self.assertTrue(data['message'] == 'User does not exist.')
+			self.assertTrue(response.content_type == 'application/json')
+			self.assertEqual(response.status_code, 404)
