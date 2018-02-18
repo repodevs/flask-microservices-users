@@ -183,6 +183,34 @@ class TestAuthBlueprint(BaseTestCase):
 				'Invalid token. Please log in again.')
 			self.assertEqual(response.status_code, 401)
 
+	def test_invalid_logout_inactive(self):
+		add_user('user', 'user@test.com', '1234')
+		user = User.query.filter_by(email='user@test.com').first()
+		user.active = False
+		db.session.commit()
+		with self.client:
+			resp_login = self.client.post(
+				'/auth/login',
+				data=json.dumps(dict(
+					email='user@test.com',
+					password='1234'
+				)),
+				content_type='application/json'
+			)
+			response = self.client.get(
+				'/auth/logout',
+				headers=dict(
+					Authorization='Bearer ' + json.loads(
+						resp_login.data.decode()
+						)['auth_token']
+				)
+			)
+			data = json.loads(response.data.decode())
+			self.assertTrue(data['status'] == 'error')
+			self.assertTrue(
+				data['message'] == 'Something went wrong. Please contact us.')
+			self.assertEqual(response.status_code, 401)
+
 	def test_user_status(self):
 		add_user('user', 'user@test.com', '1234')
 		with self.client:
