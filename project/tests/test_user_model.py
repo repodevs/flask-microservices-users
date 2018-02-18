@@ -14,8 +14,10 @@ class TestUserModel(BaseTestCase):
         self.assertTrue(user.id)
         self.assertEqual(user.username, 'testuser')
         self.assertEqual(user.email, 'user@test.com')
+        self.assertTrue(user.password)
         self.assertTrue(user.active)
         self.assertTrue(user.created_at)
+        self.assertTrue(user.admin == False)
 
     def test_add_user_duplicate_username(self):
         """Ensure error is thrown if the username already exists"""
